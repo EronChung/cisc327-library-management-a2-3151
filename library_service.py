@@ -6,7 +6,8 @@ Contains all the core business logic for the Library Management System
 from datetime import datetime, timedelta
 from typing import Dict, List, Optional, Tuple
 from database import (
-    get_book_by_id, get_book_by_isbn, get_patron_borrow_count,
+    get_book_by_id, get_book_by_isbn,
+    get_patron_borrowed_books, get_patron_borrow_count,
     insert_book, insert_borrow_record, update_book_availability,
     update_borrow_record_return_date, get_all_books
 )
@@ -104,17 +105,61 @@ def borrow_book_by_patron(patron_id: str, book_id: int) -> Tuple[bool, str]:
 def return_book_by_patron(patron_id: str, book_id: int) -> Tuple[bool, str]:
     """
     Process book return by a patron.
-    
-    TODO: Implement R4 as per requirements
+    Implements R4 as per requirements
+
+    Args:
+        patron_id: 6-digit library card ID
+        book_id: ID of the book to return
+        
+    Returns:
+        tuple: (success: bool, message: str)
     """
-    return False, "Book return functionality is not yet implemented."
+    # Validate patron ID
+    if not patron_id or not patron_id.isdigit() or len(patron_id) != 6:
+        return False, "Invalid patron ID. Must be exactly 6 digits."
+    
+    # Check if book exists and is available
+    book = get_book_by_id(book_id)
+    if not book:
+        return False, "Book not found."
+    
+    # Check if patron has the book currently borrowed
+    has_borrowed = False
+    borrowed_books = get_patron_borrowed_books(patron_id)
+
+    for borrowed in borrowed_books:
+        if borrowed["book_id"] == book_id:
+            has_borrowed = True
+            break
+
+    if not has_borrowed:
+        return False, f'Patron "{patron_id}" is not currently borrowing a copy of "{book["title"]}".'
+    
+    # Update borrow record return date
+    return_date = datetime.now()
+    update_success = update_borrow_record_return_date(patron_id, book_id, return_date)
+    if not update_success:
+        return False, "Database error occurred while updating borrow record return date."
+
+    # Update availability
+    availability_success = update_book_availability(book_id, 1)
+    if not availability_success:
+        return False, "Database error occurred while updating book availability."
+
+    return True, f'Successfully returned "{book["title"]}" on date {return_date.strftime("%Y-%m-%d")}.'
 
 def calculate_late_fee_for_book(patron_id: str, book_id: int) -> Dict:
     """
     Calculate late fees for a specific book.
+    Implements R5 as per requirements 
     
-    TODO: Implement R5 as per requirements 
-    
+    Args:
+        patron_id: 6-digit library card ID
+        book_id: ID of the book to return
+        
+    Returns:
+        tuple: (success: bool, message: str)
+
     
     return { // return the calculated values
         'fee_amount': 0.00,
