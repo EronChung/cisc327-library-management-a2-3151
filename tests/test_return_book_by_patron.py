@@ -9,7 +9,7 @@ def test_return_book_valid_input():
     success, message = return_book_by_patron("123456", 1)
     
     assert success == True
-    # No return message yet to assert on
+    assert "Successfully returned" in message
 
 
 def test_return_book_invalid_no_patron():
@@ -17,7 +17,7 @@ def test_return_book_invalid_no_patron():
     success, message = return_book_by_patron("", 1)
     
     assert success == False
-    # No return message yet to assert on
+    assert "Invalid patron ID" in message
 
 
 def test_return_book_invalid_patron_too_short():
@@ -25,7 +25,7 @@ def test_return_book_invalid_patron_too_short():
     success, message = return_book_by_patron("12345", 1)
     
     assert success == False
-    # No return message yet to assert on
+    assert "Invalid patron ID" in message
 
 
 def test_return_book_invalid_patron_too_long():
@@ -33,7 +33,7 @@ def test_return_book_invalid_patron_too_long():
     success, message = return_book_by_patron("1234567", 1)
     
     assert success == False
-    # No return message yet to assert on
+    assert "Invalid patron ID" in message
 
 
 def test_return_book_invalid_patron_not_number():
@@ -41,7 +41,7 @@ def test_return_book_invalid_patron_not_number():
     success, message = return_book_by_patron("123abc", 1)
     
     assert success == False
-    # No return message yet to assert on
+    assert "Invalid patron ID" in message
 
 
 def test_return_book_invalid_book_not_found():
@@ -49,4 +49,12 @@ def test_return_book_invalid_book_not_found():
     success, message = return_book_by_patron("123456", 100000)
     
     assert success == False
-    # No return message yet to assert on
+    assert "Book not found" in message
+
+
+def test_return_book_invalid_book_not_borrowed():
+    """Test returning a book with book not currently borrowed."""
+    success, message = return_book_by_patron("123456", 2)
+    
+    assert success == False
+    assert "is not currently borrowing" in message
