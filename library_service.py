@@ -171,9 +171,9 @@ def calculate_late_fee_for_book(patron_id: str, book_id: int) -> Dict:
     """
     # Initialize dict
     fee_dict = {
-        "fee_amount": 0.00,
-        "days_overdue": 0,
-        "status": "Not late"
+        "fee_amount": -1.00,
+        "days_overdue": -1,
+        "status": "Unknown"
     }
 
     # Validate patron ID
@@ -199,15 +199,18 @@ def calculate_late_fee_for_book(patron_id: str, book_id: int) -> Dict:
     
     # Calculate fee amount based on days overdue,
     # and set dict values
-    days_overdue = (datetime.now() - record["due_date"]).days
+    days_overdue = max((datetime.now() - record["due_date"]).days, 0)
     fee_dict["days_overdue"] = days_overdue
 
     fee_amount = min(days_overdue, 7) * 0.5         # First 7 days
     fee_amount += max(days_overdue - 7, 0) * 1      # Additional days
     fee_dict["fee_amount"] = min(fee_amount, 15.0)  # Cap at $15.00
 
+    fee_dict["status"] = "Not late"
     if record["is_overdue"]:
         fee_dict["status"] = "Late"
+
+    print(fee_dict)
 
     return fee_dict
 
@@ -273,7 +276,7 @@ def get_patron_status_report(patron_id: str) -> Dict:
     # Calculate total late fees
     total = 0
     for borrowed in borrowed_books:
-        total += calculate_late_fee_for_book(patron_id, borrowed["book_id"])
+        total += calculate_late_fee_for_book(patron_id, borrowed["book_id"])["fee_amount"]
     report["total_late_fees"] = total
 
     # TODO: Add borrow history (not doable with current database.py functions)
