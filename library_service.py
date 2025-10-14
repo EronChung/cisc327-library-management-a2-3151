@@ -233,6 +233,10 @@ def search_books_in_catalog(search_term: str, search_type: str) -> List[Dict]:
     # Check if search_type exists
     if not search_type:
         return matches
+    
+    # Check if search_type key is correct
+    if search_type not in ["title", "author", "isbn"]:
+        return matches
 
     # Loop through all books
     books = get_all_books()
