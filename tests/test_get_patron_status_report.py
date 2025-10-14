@@ -9,8 +9,8 @@ def test_patron_status_valid_input():
     report = get_patron_status_report("123456")
     
     assert len(report["borrowed_books"]) > 0
-    assert report["borrowed_books"][0]["book_id"] == 3  # Still borrowing 1984
-    assert report["borrow_count"] == 1
+    assert report["borrowed_books"][0]["book_id"] == 3  # Still borrowing The Great Gatsby and 1984
+    assert report["borrow_count"] == 2
     assert report["total_late_fees"] == 0
 
 
