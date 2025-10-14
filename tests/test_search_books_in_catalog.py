@@ -4,33 +4,46 @@ from library_service import (
 )
 
 
-def test_search_books_valid_input():
-    """Test searching for books with valid input."""
-    success, message = search_books_in_catalog("1984", "title")
+def test_search_books_valid_input_title():
+    """Test searching for books with valid title."""
+    books = search_books_in_catalog("1984", "title")
     
-    assert success == True
-    # No return message yet to assert on
+    assert len(books) == 1
+    assert books[0]["id"] == 3
+
+
+def test_search_books_valid_input_author():
+    """Test searching for books with valid author."""
+    books = search_books_in_catalog("Harper", "author")
+    
+    assert len(books) == 1
+    assert books[0]["id"] == 2
+
+
+def test_search_books_valid_input_isbn():
+    """Test searching for books with valid isbn."""
+    books = search_books_in_catalog("9780743273565", "isbn")
+    
+    assert len(books) == 1
+    assert books[0]["id"] == 1
 
 
 def test_search_books_invalid_no_term():
     """Test searching for books with no term."""
-    success, message = search_books_in_catalog("", "title")
+    books = search_books_in_catalog("", "title")
     
-    assert success == False
-    # No return message yet to assert on
+    assert len(books) == 0
 
 
 def test_search_books_invalid_no_type():
     """Test searching for books with no search type."""
-    success, message = search_books_in_catalog("1984", "")
+    books = search_books_in_catalog("1984", "")
     
-    assert success == False
-    # No return message yet to assert on
+    assert len(books) == 0
 
 
 def test_search_books_invalid_wrong_type():
     """Test searching for books with invalid search type."""
-    success, message = search_books_in_catalog("1984", "abc123")
+    books = search_books_in_catalog("1984", "abc123")
     
-    assert success == False
-    # No return message yet to assert on
+    assert len(books) == 0
