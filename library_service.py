@@ -223,8 +223,23 @@ def search_books_in_catalog(search_term: str, search_type: str) -> List[Dict]:
     Returns:
         list
     """
-    
-    return []
+    matches = []
+
+    # Loop through all books
+    books = get_all_books()
+    for book in books:
+
+        # Exact matching
+        if search_type == "isbn":
+            if search_term == book[search_type]:
+                matches.append(book)
+        
+        # Partial matching (case-insensitive)
+        else:
+            if search_term.lower() in book[search_type].lower():
+                matches.append(book)
+            
+    return matches
 
 def get_patron_status_report(patron_id: str) -> Dict:
     """
