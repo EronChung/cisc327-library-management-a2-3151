@@ -244,7 +244,38 @@ def search_books_in_catalog(search_term: str, search_type: str) -> List[Dict]:
 def get_patron_status_report(patron_id: str) -> Dict:
     """
     Get status report for a patron.
-    
-    TODO: Implement R7 as per requirements
+    Implements R7 as per requirements
+
+    Args:
+        patron_id: 6-digit library card ID
+        book_id: ID of the book to return
+        
+    Returns:
+        dict: {borrowed_books: List[Dict], borrow_count: int, borrow_history: List[Dict], total_late_fees: float}
     """
-    return {}
+    # Initialize dict
+    report = {
+        "borrowed_books": [],
+        "borrow_count": 0,
+        "borrow_history": [],
+        "total_late_fees": 0
+    }
+
+    # Validate patron ID
+    if not patron_id or not patron_id.isdigit() or len(patron_id) != 6:
+        return report
+    
+    # Get borrowed books + count
+    borrowed_books = get_patron_borrowed_books(patron_id)
+    report["borrowed_books"] = borrowed_books
+    report["borrow_count"] = get_patron_borrow_count(patron_id)
+
+    # Calculate total late fees
+    total = 0
+    for borrowed in borrowed_books:
+        total += calculate_late_fee_for_book(patron_id, borrowed["book_id"])
+    report["total_late_fees"] = total
+
+    # TODO: Add borrow history (not doable with current database.py functions)
+
+    return report
