@@ -1,4 +1,4 @@
-name: Library Management System
+name: Library Management System CI
 
 on:
   push:
