@@ -226,6 +226,14 @@ def search_books_in_catalog(search_term: str, search_type: str) -> List[Dict]:
     """
     matches = []
 
+    # Check if search_term exists
+    if not search_term:
+        return matches
+    
+    # Check if search_type exists
+    if not search_type:
+        return matches
+
     # Loop through all books
     books = get_all_books()
     for book in books:
