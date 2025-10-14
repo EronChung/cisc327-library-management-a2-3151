@@ -6,39 +6,41 @@ from library_service import (
 
 def test_patron_status_valid_input():
     """Test getting status report for a patron with valid input."""
-    success, message = get_patron_status_report("123456")
+    report = get_patron_status_report("123456")
     
-    assert success == True
-    # No return message yet to assert on
+    assert len(report["borrowed_books"]) > 0
+    assert report["borrowed_books"][0]["book_id"] == 3  # Still borrowing 1984
+    assert report["borrow_count"] == 1
+    assert report["total_late_fees"] == 0
 
 
 def test_patron_status_invalid_no_patron():
     """Test getting status report for a patron with no ID."""
-    success, message = get_patron_status_report("")
+    report = get_patron_status_report("")
     
-    assert success == False
-    # No return message yet to assert on
+    assert len(report["borrowed_books"]) == 0
+    assert report["borrow_count"] == 0
 
 
 def test_patron_status_invalid_patron_too_short():
     """Test getting status report for a patron with ID being too short."""
-    success, message = get_patron_status_report("12345")
+    report = get_patron_status_report("12345")
     
-    assert success == False
-    # No return message yet to assert on
+    assert len(report["borrowed_books"]) == 0
+    assert report["borrow_count"] == 0
 
 
 def test_patron_status_invalid_patron_too_long():
     """Test getting status report for a patron with ID being too long."""
-    success, message = get_patron_status_report("1234567")
+    report = get_patron_status_report("1234567")
     
-    assert success == False
-    # No return message yet to assert on
+    assert len(report["borrowed_books"]) == 0
+    assert report["borrow_count"] == 0
 
 
 def test_patron_status_invalid_patron_not_number():
     """Test getting status report for a patron with ID not being a number."""
-    success, message = get_patron_status_report("1a2b3c")
+    report = get_patron_status_report("1a2b3c")
     
-    assert success == False
-    # No return message yet to assert on
+    assert len(report["borrowed_books"]) == 0
+    assert report["borrow_count"] == 0

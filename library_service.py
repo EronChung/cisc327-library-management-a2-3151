@@ -210,8 +210,6 @@ def calculate_late_fee_for_book(patron_id: str, book_id: int) -> Dict:
     if record["is_overdue"]:
         fee_dict["status"] = "Late"
 
-    print(fee_dict)
-
     return fee_dict
 
 def search_books_in_catalog(search_term: str, search_type: str) -> List[Dict]:
