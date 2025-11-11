@@ -28,7 +28,7 @@ def test_payment_declined_by_gateway_limit_exceeded(mocker):
     """Test getting declined by payment service (limit exceeded)."""
     mocker.patch("services.library_service.calculate_late_fee_for_book",
                  return_value={
-                    "fee_amount"    : 0.5,
+                    "fee_amount"    : 1001,
                     "days_overdue"  : 1,
                     "status"        : "Late"
                  })
