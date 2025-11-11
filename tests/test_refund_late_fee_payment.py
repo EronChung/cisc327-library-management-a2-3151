@@ -14,7 +14,9 @@ def test_successful_refund(mocker):
 
     assert success == True
     assert "processed successfully" in message
-    mock_gateway.refund_payment.assert_called_once()
+    mock_gateway.refund_payment.assert_called_once_with(
+        "txn_123", 1.0
+    )
 
 
 def test_refund_invalid_id(mocker):
@@ -26,7 +28,9 @@ def test_refund_invalid_id(mocker):
 
     assert success == False
     assert "Refund failed: Invalid transaction ID" in message
-    mock_gateway.refund_payment.assert_called_once()
+    mock_gateway.refund_payment.assert_called_once_with(
+        "txn_1234", 1.0
+    )
 
 
 def test_refund_amount_negative(mocker):
