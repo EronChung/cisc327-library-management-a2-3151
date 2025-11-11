@@ -74,3 +74,23 @@ def test_add_book_invalid_copies_zero():
     
     assert success == False
     assert "positive integer" in message
+
+
+# ===== Tests added in Assignment 3 =====
+
+def test_add_book_invalid_duplicate_isbn():
+    """Test adding a book with an ISBN already in use (input same as first valid test)."""
+    success, message = add_book_to_catalog("Test Book", "Test Author", "1234567890123", 5)
+    
+    assert success == False
+    assert "ISBN already exists" in message
+
+
+def test_add_book_database_error(mocker):
+    """Test adding a book with an ISBN already in use (input same as first valid test)."""
+    mocker.patch("services.library_service.insert_book", return_value=False)
+    
+    success, message = add_book_to_catalog("Test Book", "Test Author", "1111111111111", 5)
+    
+    assert success == False
+    assert "Database error" in message
