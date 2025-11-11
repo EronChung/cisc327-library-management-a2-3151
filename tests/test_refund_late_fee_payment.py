@@ -14,6 +14,7 @@ def test_successful_refund(mocker):
 
     assert success == True
     assert "processed successfully" in message
+    mock_gateway.refund_payment.assert_called_once()
 
 
 def test_refund_invalid_id(mocker):
@@ -25,6 +26,7 @@ def test_refund_invalid_id(mocker):
 
     assert success == False
     assert "Refund failed: Invalid transaction ID" in message
+    mock_gateway.refund_payment.assert_called_once()
 
 
 def test_refund_amount_negative(mocker):
@@ -35,7 +37,7 @@ def test_refund_amount_negative(mocker):
 
     assert success == False
     assert "Refund amount must be greater" in message
-    mock_gateway.assert_not_called()
+    mock_gateway.refund_payment.assert_not_called()
 
 
 def test_refund_amount_zero(mocker):
@@ -46,7 +48,7 @@ def test_refund_amount_zero(mocker):
 
     assert success == False
     assert "Refund amount must be greater" in message
-    mock_gateway.assert_not_called()
+    mock_gateway.refund_payment.assert_not_called()
 
 
 def test_refund_amount_exceeds_15(mocker):
@@ -57,4 +59,4 @@ def test_refund_amount_exceeds_15(mocker):
 
     assert success == False
     assert "Refund amount exceeds" in message
-    mock_gateway.assert_not_called()
+    mock_gateway.refund_payment.assert_not_called()

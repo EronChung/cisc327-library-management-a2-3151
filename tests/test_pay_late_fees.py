@@ -22,6 +22,7 @@ def test_successful_payment(mocker):
     assert success == True
     assert "Payment successful" in message
     assert transaction_id == "txn_123"
+    mock_gateway.process_payment.assert_called_once()
 
 
 def test_payment_declined_by_gateway_limit_exceeded(mocker):
@@ -41,6 +42,7 @@ def test_payment_declined_by_gateway_limit_exceeded(mocker):
     assert success == False
     assert "Payment failed: Payment declined" in message
     assert transaction_id == None
+    mock_gateway.process_payment.assert_called_once()
 
 
 def test_payment_invalid_patron(mocker):
@@ -59,7 +61,7 @@ def test_payment_invalid_patron(mocker):
     assert success == False
     assert "Invalid patron ID" in message
     assert transaction_id == None
-    mock_gateway.assert_not_called()
+    mock_gateway.process_payment.assert_not_called()
 
 
 def test_payment_zero_late_fees(mocker):
@@ -78,7 +80,7 @@ def test_payment_zero_late_fees(mocker):
     assert success == False
     assert "No late fees" in message
     assert transaction_id == None
-    mock_gateway.assert_not_called()
+    mock_gateway.process_payment.assert_not_called()
 
 
 def test_payment_network_error(mocker):
@@ -97,3 +99,4 @@ def test_payment_network_error(mocker):
     assert success == False
     assert "Payment processing error" in message
     assert transaction_id == None
+    mock_gateway.process_payment.assert_called_once()
