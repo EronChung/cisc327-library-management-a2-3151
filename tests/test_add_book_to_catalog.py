@@ -87,7 +87,7 @@ def test_add_book_invalid_duplicate_isbn():
 
 
 def test_add_book_database_error(mocker):
-    """Test adding a book with an ISBN already in use (input same as first valid test)."""
+    """Test database error when adding a book."""
     mocker.patch("services.library_service.insert_book", return_value=False)
     
     success, message = add_book_to_catalog("Test Book", "Test Author", "1111111111111", 5)
